@@ -1,0 +1,194 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.mobile_padding_top }}px;
+    padding-bottom: {{ section.settings.mobile_padding_bottom }}px;
+  }
+  @media screen and (min-width: 990px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="collection-story section-{{ section.id }}-padding">
+  <div class="page-width {% if section.settings.mobile_scrollable %} page-width--flush-small{% endif %}">
+
+    {%- if section.settings.title != blank -%}
+      <div class="section-header">
+        <h2 class="section-header__title">{{ section.settings.title }}</h2>
+      </div>
+    {%- endif -%}
+
+  <div{% if section.settings.mobile_scrollable %} class="grid-overflow-wrapper"{% endif %}>
+  <div class="grid grid--uniform"{% if section.settings.mobile_scrollable %} data-aos="overflow__animation"{% endif %}>
+    <div class="grid grid--uniform{% unless section.settings.enable_gutter %} grid--no-gutters{% endunless %}">
+      {%- liquid
+        assign isEmpty = true
+        if section.blocks.size > 0
+          assign isEmpty = false
+        endif
+      -%}
+  
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign collection = collections[block.settings.collection]
+          assign background_position = block.settings.focal_point
+  
+          case section.settings.per_row
+            when 2
+              assign grid_item_width = 'medium-up--one-half'
+            when 3
+              assign grid_item_width = 'small--one-half medium-up--one-third'
+            when 4
+              assign grid_item_width = 'small--one-half medium-up--one-quarter'
+            when 5
+              assign grid_item_width = 'small--one-half medium-up--one-fifth'
+                when 6
+              assign grid_item_width = 'small--one-half medium-up--one-sixed'
+                when 7
+              assign grid_item_width = 'small--one-half medium-up--one-seventh'
+                when 7
+              assign grid_item_width = 'small--one-half medium-up--one-eighth'
+  
+          endcase
+        -%}
+  
+        {%- render 'collection-grid-item-story',
+          collection: collection,
+          block: block,
+          grid_item_width: grid_item_width,
+          background_position: background_position,
+          per_row: section.settings.per_row
+        -%}
+      {%- endfor -%}
+  
+      {%- if isEmpty -%}
+        <div class="page-width">
+          <div class="grid">
+            <div class="grid__item">
+              <div class="rte">
+                {{ 'home_page.onboarding.no_content' | t }}
+              </div>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+  
+        </div>
+      </div>
+    
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+  {
+    "name": "Collection list story",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Collection list story"
+      },
+      {
+        "type": "range",
+        "id": "per_row",
+        "label": "Collections per row",
+        "default": 4,
+        "min": 2,
+        "max": 10,
+        "step": 1
+      },
+      {
+        "type": "checkbox",
+        "id": "mobile_scrollable",
+        "label": "Enable swipe on mobile",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Section padding"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Padding top",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Padding bottom",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "mobile_padding_top",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Mobile padding top",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "mobile_padding_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Mobile padding bottom",
+        "default": 0
+      }
+    ],
+    "blocks": [
+      {
+        "type": "collection",
+        "name": "Collection",
+        "settings": [
+          {
+            "id": "collection",
+            "type": "collection",
+            "label": "Collection"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Collection list story",
+        "blocks": [
+          {
+            "type": "collection"
+          },
+          {
+            "type": "collection"
+          },
+          {
+            "type": "collection"
+          },
+          {
+            "type": "collection"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
