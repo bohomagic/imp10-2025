@@ -1,0 +1,50 @@
+<div id="delivery-estimate-box">
+  🚚 <span id="delivery-estimate-text"></span>
+</div>
+
+<script>
+  const country = "{{ localization.country.iso_code | default: 'US' }}";
+
+  const shippingDays = {
+    US: { min: 4, max: 6 },
+    CA: { min: 5, max: 8 },
+    DE: { min: 6, max: 9 },
+    AU: { min: 7, max: 10 },
+    DEFAULT: { min: 10, max: 15 }
+  };
+
+  const now = new Date();
+  const laTimeStr = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  }).format(now);
+  const [laHour, laMinute] = laTimeStr.split(':').map(Number);
+
+  const cutoffHour = 8;
+
+  const cutoff = new Date(now);
+  if (laHour >= cutoffHour) {
+    cutoff.setDate(cutoff.getDate() + 1);
+  }
+  cutoff.setHours(8, 0, 0, 0);
+
+  const msLeft = cutoff - now;
+  const hoursLeft = Math.floor(msLeft / 3600000);
+  const minutesLeft = Math.floor((msLeft % 3600000) / 60000);
+
+  const range = shippingDays[country] || shippingDays.DEFAULT;
+  const deliveryMin = new Date(cutoff);
+  const deliveryMax = new Date(cutoff);
+  deliveryMin.setDate(deliveryMin.getDate() + 2);
+  deliveryMax.setDate(deliveryMax.getDate() + range.max);
+
+  const options = { month: 'short', day: 'numeric' };
+
+  const estimateText = msLeft > 0
+      ? `Order within <strong><span style="color: #4CAF50;">${hoursLeft} hours ${minutesLeft} minutes</span></strong> to get it between <strong>${deliveryMin.toLocaleDateString('en-US', options)}</strong> and <strong>${deliveryMax.toLocaleDateString('en-US', options)}</strong>`
+    : `<strong>Order <span style="color: #4CAF50;">now</span></strong> to get it between <strong>${deliveryMin.toLocaleDateString('en-US', options)}</strong> and <strong>${deliveryMax.toLocaleDateString('en-US', options)}</strong>`;
+
+  document.getElementById('delivery-estimate-text').innerHTML = estimateText;
+</script>

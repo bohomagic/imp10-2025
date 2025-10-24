@@ -1,0 +1,15 @@
+<div id="warranty-modal" class="wmodal" role="dialog" aria-modal="true" aria-labelledby="warranty-title" aria-hidden="true">
+  <div class="wmodal__backdrop" data-wmodal-close></div>
+  <div class="wmodal__dialog" role="document" tabindex="-1">
+    <button class="wmodal__close" type="button" aria-label="Close" data-wmodal-close>&times;</button>
+    <h2 id="warranty-title" class="wmodal__title">Boho-Magic 2-Year Warranty</h2>
+    <div class="wmodal__content">
+        {%- if shop.metafields.custom.warranty_text != blank -%}
+            {{ shop.metafields.custom.warranty_text | metafield_tag }}
+        {%- else -%}
+        All Boho Magic jewelry made from genuine 925 Sterling Silver is covered by a complimentary 2-year limited warranty for manufacturing defects in materials and craftsmanship, starting September 8, 2025.
+        To learn more and review the specific exclusions to our warranty, please visit our <a href="/pages/faq" target="_blank">FAQ page</a>.
+      {%- endif -%}
+    </div>
+  </div>
+</div>
